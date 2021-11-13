@@ -1,71 +1,59 @@
 # coding: utf-8
 # license: GPLv3
 
-"""Модуль визуализации.
-Нигде, кроме этого модуля, не используются экранные координаты объектов.
-Функции, создающие графические объекты и перемещающие их на экране, принимают физические координаты
+"""
+Visualization module.
+Screen coordinates of the objects are used only here.
+The functions for drawing and relocating the objects take in the model coordinates.
 """
 
 header_font = "Arial-16"
-"""Шрифт в заголовке"""
+"""Font in the heading"""
 
 window_width = 800
-"""Ширина окна"""
-
 window_height = 800
-"""Высота окна"""
+"""The window's width and height respectively"""
 
 scale_factor = None
-"""Масштабирование экранных координат по отношению к физическим.
-Тип: float
-Мера: количество пикселей на один метр."""
+"""The ratio of the screen coordinates to the model ones. 
+Type: float. Measure: the number of pixels in one meter."""
 
 
 def calculate_scale_factor(max_distance):
-    """Вычисляет значение глобальной переменной **scale_factor** по данной характерной длине"""
+    """Calculates the value of scale_factor based on the particular value of length taken in"""
     global scale_factor
-    scale_factor = 0.4*min(window_height, window_width)/max_distance
+    scale_factor = 0.4 * min(window_height, window_width)/max_distance
     print('Scale factor:', scale_factor)
 
 
 def scale_x(x):
-    """Возвращает экранную **x** координату по **x** координате модели.
-    Принимает вещественное число, возвращает целое число.
-    В случае выхода **x** координаты за пределы экрана возвращает
-    координату, лежащую за пределами холста.
-
-    Параметры:
-
-    **x** — x-координата модели.
     """
+    Returns the x-coordinate (int) for the screen based on the x-coordinate of the model (float).
+    Note: does not correct the result if, based on calculations, it is beyond the screen.
 
-    return int(x*scale_factor) + window_width//2
+    :param x: the x-coordinate given by model calculation.
+    """
+    return int(x * scale_factor) + window_width // 2
 
 
 def scale_y(y):
-    """Возвращает экранную **y** координату по **y** координате модели.
-    Принимает вещественное число, возвращает целое число.
-    В случае выхода **y** координаты за пределы экрана возвращает
-    координату, лежащую за пределами холста.
-    Направление оси развёрнуто, чтобы у модели ось **y** смотрела вверх.
-
-    Параметры:
-
-    **y** — y-координата модели.
     """
+    Returns the y-coordinate (int) for the screen based on the y-coordinate of the model (float).
+    Note: does not correct the result if, based on calculations, it is beyond the screen.
+    Note: the axis' direction is inverted so that the model's axis points up.
 
-    return int(y*scale_factor) + window_height//2
+    :param y: the y-coordinate given by model calculation.
+    """
+    return (-1) * int(y * scale_factor) + window_height // 2
 
 
 def create_star_image(space, star):
-    """Создаёт отображаемый объект звезды.
-
-    Параметры:
-
-    **space** — холст для рисования.
-    **star** — объект звезды.
     """
+    Draws the object of the 'Star' class on the canvas.
 
+    :param space: canvas.
+    :param star: object.
+    """
     x = scale_x(star.x)
     y = scale_y(star.y)
     r = star.R
@@ -73,12 +61,11 @@ def create_star_image(space, star):
 
 
 def create_planet_image(space, planet):
-    """Создаёт отображаемый объект планеты.
+    """
+    Draws the object of the 'Planet' class on the canvas.
 
-    Параметры:
-
-    **space** — холст для рисования.
-    **planet** — объект планеты.
+    :param space: canvas.
+    :param planet: object.
     """
     x = scale_x(planet.x)
     y = scale_y(planet.y)
@@ -87,31 +74,29 @@ def create_planet_image(space, planet):
 
 
 def update_system_name(space, system_name):
-    """Создаёт на холсте текст с названием системы небесных тел.
-    Если текст уже был, обновляет его содержание.
+    """
+    Creates the text with the celestial objects on the canvas.
+    Or, updates the text if the canvas already had it.
 
-    Параметры:
-
-    **space** — холст для рисования.
-    **system_name** — название системы тел.
+    :param space: canvas.
+    :param system_name: name of the system.
     """
     space.create_text(30, 80, tag="header", text=system_name, font=header_font)
 
 
 def update_object_position(space, body):
-    """Перемещает отображаемый объект на холсте.
+    """
+    Updates the object's position on the canvas
 
-    Параметры:
-
-    **space** — холст для рисования.
-    **body** — тело, которое нужно переместить.
+    :param space: canvas.
+    :param body: body to be moved.
     """
     x = scale_x(body.x)
     y = scale_y(body.y)
     r = body.R
     if x + r < 0 or x - r > window_width or y + r < 0 or y - r > window_height:
         space.coords(body.image, window_width + r, window_height + r,
-                     window_width + 2*r, window_height + 2*r)  # положить за пределы окна
+                     window_width + 2 * r, window_height + 2 * r)  # beyond the screen
     space.coords(body.image, x - r, y - r, x + r, y + r)
 
 
