@@ -4,14 +4,6 @@
 from solar_objects import Star, Planet
 
 
-def E_reader(str):
-    """Обрабатывает число, в котором содержится E для обозначения степени 10, в приемлимый для компилятора вид"""
-    if not str.isnumeric:
-        return float(str.split('E')[0]) * (10 ** float(str.split('E')[1]))
-    else:
-        return float(str)
-
-
 def read_space_objects_data_from_file(input_filename):
     """Считывает данные о космических объектах из файла, создаёт сами объекты
     и вызывает создание их графических образов
@@ -58,11 +50,11 @@ def parse_star_parameters(line, star):
 
     star.R = int(line.split()[1])
     star.color = line.split()[2]
-    star.m = E_reader(line.split()[3])
-    star.x = E_reader(line.split()[4])
-    star.y = E_reader(line.split()[5])
-    star.Vx = E_reader(line.split()[6])
-    star.Vy = E_reader(line.split()[7])
+    star.m = float(line.split()[3])
+    star.x = float(line.split()[4])
+    star.y = float(line.split()[5])
+    star.Vx = float(line.split()[6])
+    star.Vy = float(line.split()[7])
 
 
 def parse_planet_parameters(line, planet):
@@ -82,11 +74,11 @@ def parse_planet_parameters(line, planet):
     """
     planet.R = int(line.split()[1])
     planet.color = line.split()[2]
-    planet.m = E_reader(line.split()[3])
-    planet.x = E_reader(line.split()[4])
-    planet.y = E_reader(line.split()[5])
-    planet.Vx = E_reader(line.split()[6])
-    planet.Vy = E_reader(line.split()[7])
+    planet.m = float(line.split()[3])
+    planet.x = float(line.split()[4])
+    planet.y = float(line.split()[5])
+    planet.Vx = float(line.split()[6])
+    planet.Vy = float(line.split()[7])
 
 
 def write_space_objects_data_to_file(output_filename, space_objects):
